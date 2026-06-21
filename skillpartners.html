@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Skill Partners | NaukriSaathi</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f5f7fa;
+    color:#333;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    padding:60px 20px;
+}
+
+.page-title{
+    text-align:center;
+    font-size:48px;
+    color:#0a1f44;
+    margin-bottom:15px;
+}
+
+.page-subtitle{
+    text-align:center;
+    font-size:18px;
+    color:#666;
+    margin-bottom:60px;
+}
+
+.partners-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+    gap:40px;
+}
+
+.partner-card{
+    background:#fff;
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.partner-card{
+    background:#fff;
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.partner-card:hover{
+    transform:translateY(-5px);
+}
+.partner-logo{
+    width:250px;
+    height:180px;
+    object-fit:contain;
+    display:block;
+    margin:0 auto 25px;
+}
+
+.partner-name{
+    font-size:32px;
+    color:#0a1f44;
+    margin-bottom:15px;
+}
+
+.partner-description{
+    font-size:17px;
+    line-height:1.8;
+    color:#555;
+    margin-bottom:25px;
+}
+
+.partner-buttons{ 
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:8px;
+    color:#fff;
+    font-weight:600;
+}
+
+.linkedin{
+    background:#0A66C2;
+}
+
+.website{
+    background:#22c55e;
+}
+
+.back-btn{
+    display:inline-block;
+    margin-top:50px;
+    text-decoration:none;
+    background:#0a1f44;
+    color:#fff;
+    padding:12px 30px;
+    border-radius:8px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:50px;
+    color:#777;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1 class="page-title">Our Skill Partners</h1>
+
+    <p class="page-subtitle">
+        Empowering students through industry-focused learning,
+        career guidance and skill development.
+    </p>
+
+    <div class="partners-grid">
+
+        <!-- SkillNexGen -->
+
+        <div class="partner-card">
+
+         <a href="https://www.linkedin.com/company/skillnexgen/" target="_blank">
+    <img src="skillnexgen-logo.jpeg"
+         alt="SkillNexGen"
+         class="partner-logo">
+</a>
+            <h2 class="partner-name">SkillNexGen</h2>
+
+            <p class="partner-description">
+                SkillNexGen is a learning and career development partner
+                helping students build industry-ready skills, gain practical
+                exposure, and achieve career success through expert guidance
+                and training programs.
+            </p>
+
+          <div class="partner-buttons">
+    <a href="https://www.linkedin.com/company/skillnexgen/"
+       target="_blank"
+       class="btn linkedin">
+        Follow us for more insights
+    </a>
+</div>
+        </div>
+
+        <!-- KaushalSaathi -->
+
+        <div class="partner-card">
+
+           <a href="https://www.kaushalsaathi.com/home" target="_blank">
+    <img src="kaushalsaathi-logo.png"
+         alt="KaushalSaathi"
+         class="partner-logo">
+</a>
+
+            <h2 class="partner-name">KaushalSaathi</h2>
+
+            <p class="partner-description">
+                KaushalSaathi focuses on empowering students and professionals
+                through skill development, practical learning opportunities,
+                career guidance, and industry-oriented programs that help
+                learners grow and succeed.
+            </p>
+
+            <div class="partner-buttons">
+                <a href="https://www.kaushalsaathi.com/home"
+                   target="_blank"
+                   class="btn website">
+                   Explore KaushalSaathi
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="text-align:center;">
+        <a href="index.html" class="back-btn">
+            ← Back to Home
+        </a>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 NaukriSaathi. All Rights Reserved.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
