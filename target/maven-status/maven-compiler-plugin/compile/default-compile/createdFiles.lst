@@ -1,8 +1,0 @@
-com\naukrisaathi\config\DataSeeder.class
-com\naukrisaathi\model\Internship.class
-com\naukrisaathi\model\User.class
-com\naukrisaathi\repository\InternshipRepository.class
-com\naukrisaathi\dto\RegisterRequest.class
-com\naukrisaathi\model\Application.class
-com\naukrisaathi\NaukriSaathiApplication.class
-com\naukrisaathi\repository\UserRepository.class
