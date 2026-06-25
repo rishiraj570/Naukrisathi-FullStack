@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard – NaukriSaathi</title>
-  <meta name="description" content="Manage your internship applications, saved listings, and profile on NaukriSaathi." />
+  <meta name="description" content="Manage your jobs applications, saved listings, and profile on NaukriSaathi." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -158,7 +158,7 @@
       <span class="ico">📋</span> My Applications
     </button>
     <button class="sidebar-item" data-section="saved" onclick="switchSection('saved', this)">
-      <span class="ico">🔖</span> Saved Internships
+      <span class="ico">🔖</span> Saved jobs
     </button>
     <div class="sidebar-sep"></div>
     <button class="sidebar-item" data-section="profile" onclick="switchSection('profile', this)">
@@ -166,7 +166,7 @@
     </button>
     <div class="sidebar-sep"></div>
     <a href="index (2).html" class="sidebar-item" style="text-decoration:none">
-      <span class="ico">🔍</span> Browse Internships
+      <span class="ico">🔍</span> Browse jobs
     </a>
   </aside>
 
@@ -176,7 +176,7 @@
     <!-- ─── OVERVIEW ─── -->
     <div class="section-panel active" id="sec-overview">
       <h1 class="page-title" id="welcome-msg">Welcome back!</h1>
-      <p class="page-sub">Here's an overview of your internship journey.</p>
+      <p class="page-sub">Here's an overview of your job journey.</p>
 
       <div class="stat-row">
         <div class="stat-card">
@@ -199,14 +199,14 @@
 
       <h2 style="font-size:18px;font-weight:800;color:var(--navy);margin-bottom:14px">Recent Applications</h2>
       <div class="app-list" id="recent-apps">
-        <div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications yet</div><div class="sub"><a href="index (2).html">Browse internships</a> and start applying!</div></div>
+        <div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications yet</div><div class="sub"><a href="index (2).html">Browse jobs</a> and start applying!</div></div>
       </div>
     </div>
 
     <!-- ─── MY APPLICATIONS ─── -->
     <div class="section-panel" id="sec-applications">
       <h1 class="page-title">My Applications</h1>
-      <p class="page-sub">Track all your internship applications in one place.</p>
+      <p class="page-sub">Track all your job applications in one place.</p>
       <div class="tabs">
         <button class="tab active" onclick="filterApps('all',this)">All</button>
         <button class="tab" onclick="filterApps('applied',this)">Applied</button>
@@ -216,16 +216,16 @@
         <button class="tab" onclick="filterApps('rejected',this)">Rejected</button>
       </div>
       <div class="app-list" id="all-apps">
-        <div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications</div><div class="sub"><a href="index (2).html">Browse internships</a> and apply!</div></div>
+        <div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications</div><div class="sub"><a href="index (2).html">Browse jobs</a> and apply!</div></div>
       </div>
     </div>
 
     <!-- ─── SAVED ─── -->
     <div class="section-panel" id="sec-saved">
-      <h1 class="page-title">Saved Internships</h1>
-      <p class="page-sub">Internships you've bookmarked for later.</p>
+      <h1 class="page-title">Saved jobs</h1>
+      <p class="page-sub">Jobs you've bookmarked for later.</p>
       <div class="saved-grid" id="saved-grid">
-        <div class="empty-state" style="grid-column:1/-1"><div class="emoji">🔖</div><div class="msg">No saved internships</div><div class="sub"><a href="index (2).html">Browse and save</a> internships you like!</div></div>
+        <div class="empty-state" style="grid-column:1/-1"><div class="emoji">🔖</div><div class="msg">No saved jobs</div><div class="sub"><a href="index (2).html">Browse and save</a> jobs you like!</div></div>
       </div>
     </div>
 
@@ -328,19 +328,19 @@
   function renderApps(apps, containerId) {
     const container = document.getElementById(containerId);
     if (!apps.length) {
-      container.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications found</div><div class="sub"><a href="index (2).html">Browse internships</a> and start applying!</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><div class="msg">No applications found</div><div class="sub"><a href="index (2).html">Browse jobs</a> and start applying!</div></div>';
       return;
     }
     container.innerHTML = apps.map(app => `
       <div class="app-card" data-status="${app.status}">
-        <div class="app-logo" style="background:${app.internship?.companyColor || '#0B1D3A'}">${(app.internship?.company?.[0] || 'I')}</div>
+        <div class="app-logo" style="background:${app.jobs?.companyColor || '#0B1D3A'}">${(app.jobs?.company?.[0] || 'I')}</div>
         <div class="app-info">
-          <div class="app-title">${app.internship?.title || 'Internship'}</div>
-          <div class="app-company">${app.internship?.company || ''} · ${app.internship?.location || ''}</div>
+          <div class="app-title">${app.jobs?.title || 'jobs'}</div>
+          <div class="app-company">${app.jobs?.company || ''} · ${app.jobs?.location || ''}</div>
           <div class="app-meta">
-            <span class="app-tag">${app.internship?.type || 'online'}</span>
-            <span class="app-tag">${app.internship?.duration || ''}</span>
-            <span class="app-tag">₹${(app.internship?.stipend || 0).toLocaleString()}/mo</span>
+            <span class="app-tag">${app.jobs?.type || 'online'}</span>
+            <span class="app-tag">${app.jobs?.duration || ''}</span>
+            <span class="app-tag">₹${(app.jobs?.stipend || 0).toLocaleString()}/mo</span>
           </div>
         </div>
         <div class="app-status">
@@ -375,7 +375,7 @@
       document.getElementById('s-saved').textContent = saved.length;
       const grid = document.getElementById('saved-grid');
       if (!saved.length) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">🔖</div><div class="msg">No saved internships</div><div class="sub"><a href="index (2).html">Browse and save</a> internships you like!</div></div>';
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">🔖</div><div class="msg">No saved jobs</div><div class="sub"><a href="index (2).html">Browse and save</a> jobs you like!</div></div>';
         return;
       }
       grid.innerHTML = saved.map(s => `
