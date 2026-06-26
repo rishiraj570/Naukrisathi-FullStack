@@ -1,12 +1,12 @@
 package com.naukrisaathi.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.index.Indexed;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class User {
@@ -22,7 +22,7 @@ public class User {
 
     private String phone;
     private String passwordHash;
-    private String role; // "student" or "recruiter"
+    private String role; // "jobseeker" or "hiringpartner" // "job seeker" or "recruiter"
     private String college;
     private String degree;
     private Integer graduationYear;

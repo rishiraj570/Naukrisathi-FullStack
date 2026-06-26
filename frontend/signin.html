@@ -405,7 +405,7 @@
   <div class="nav-left">
     <img src="NaukriSaathi.jpeg" alt="SunSys Techsol" class="nav-sunsys" />
     <div class="nav-divider"></div>
-    <a href="index (2).html" class="nav-logo">
+    <a href="index.html" class="nav-logo">
       <div class="logo-icon">IS</div>
       NaukriSaathi<span>.com</span>
     </a>
@@ -564,20 +564,15 @@
 <script src="api.js"></script>
 <script>
   // Redirect if already logged in
-  if (isLoggedIn()) { window.location.href = 'dashboard.html'; }
-
-  // ---- TOAST ----
-  function showToast(msg, icon = '✅') {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    document.getElementById('toast-icon').textContent = icon;
-    t.style.transform = 'translateY(0)';
-    t.style.opacity = '1';
-    setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 3000);
+  if (isLoggedIn()) {
+    const u = getUser();
+    window.location.href = u && u.role === 'hiringpartner'
+      ? 'pages/recruiter-dashboard.html'
+      : 'pages/jobseeker-dashboard.html';
   }
 
   // ---- TOGGLE PASSWORD ----
-  const pwInput = document.getElementById('password');
+  const pwInput  = document.getElementById('password');
   const toggleBtn = document.getElementById('toggle-pw');
   let shown = false;
   toggleBtn.addEventListener('click', () => {
@@ -586,7 +581,7 @@
     toggleBtn.textContent = shown ? '🙈' : '👁';
   });
 
-  // ---- SOCIAL LOGIN ----
+  // ---- SOCIAL LOGIN (placeholder) ----
   function socialLogin(provider) {
     showToast(`${provider} login coming soon!`, '🔗');
   }
@@ -604,7 +599,7 @@
   function sendReset() {
     const email = document.getElementById('forgot-email').value.trim();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showToast('Please enter a valid email!', '');
+      showToast('Please enter a valid email!', '❌');
       return;
     }
     closeForgot();
@@ -615,55 +610,48 @@
     if (e.target === this) closeForgot();
   });
 
-  // ---- FORM VALIDATION & SUBMIT (REAL API) ----
+  // ---- FORM SUBMIT ----
   document.getElementById('signin-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
+    const emailEl = document.getElementById('email');
+    const pwEl    = document.getElementById('password');
     const emailErr = document.getElementById('email-error');
-    const pwErr = document.getElementById('pw-error');
+    const pwErr    = document.getElementById('pw-error');
     let valid = true;
 
-    email.classList.remove('error');
-    password.classList.remove('error');
-    emailErr.style.display = 'none';
-    pwErr.style.display = 'none';
+    emailEl.classList.remove('error'); emailErr.style.display = 'none';
+    pwEl.classList.remove('error');    pwErr.style.display    = 'none';
 
-    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
-      email.classList.add('error');
-      emailErr.style.display = 'block';
-      valid = false;
+    if (!emailEl.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+      emailEl.classList.add('error'); emailErr.style.display = 'block'; valid = false;
     }
-
-    if (!password.value || password.value.length < 6) {
-      password.classList.add('error');
-      pwErr.style.display = 'block';
-      valid = false;
+    if (!pwEl.value || pwEl.value.length < 6) {
+      pwEl.classList.add('error'); pwErr.style.display = 'block'; valid = false;
     }
-
     if (!valid) return;
 
-    const btn = document.getElementById('submit-btn');
+    const btn     = document.getElementById('submit-btn');
     const spinner = document.getElementById('spinner');
     const btnText = document.getElementById('btn-text');
-    btn.disabled = true;
-    spinner.style.display = 'block';
-    btnText.textContent = 'Signing in...';
+    btn.disabled = true; spinner.style.display = 'block'; btnText.textContent = 'Signing in...';
 
     try {
       const data = await AuthAPI.login({
-        email: email.value.trim(),
-        password: password.value
+        email: emailEl.value.trim(),
+        password: pwEl.value
       });
       setAuth(data.token, data.user);
       showToast(data.message || 'Welcome back!', '🎉');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+      setTimeout(() => {
+        const user = getUser();
+        window.location.href = user && user.role === 'hiringpartner'
+          ? 'pages/recruiter-dashboard.html'
+          : 'pages/jobseeker-dashboard.html';
+      }, 900);
     } catch (err) {
-      btn.disabled = false;
-      spinner.style.display = 'none';
-      btnText.textContent = 'Sign In →';
-      showToast(err.message || 'Login failed. Please try again.', '');
+      btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Sign In →';
+      showToast(err.message || 'Login failed. Please try again.', '❌');
     }
   });
 </script>

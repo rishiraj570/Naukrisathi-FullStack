@@ -1,5 +1,23 @@
 package com.naukrisaathi.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.naukrisaathi.dto.ApplyRequest;
 import com.naukrisaathi.dto.UpdateStatusRequest;
 import com.naukrisaathi.model.Application;
@@ -7,12 +25,6 @@ import com.naukrisaathi.model.Internship;
 import com.naukrisaathi.model.User;
 import com.naukrisaathi.repository.ApplicationRepository;
 import com.naukrisaathi.repository.InternshipRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 @RestController
 @RequestMapping("/api/applications")
@@ -32,8 +44,8 @@ public class ApplicationController {
     public ResponseEntity<Map<String, Object>> apply(@RequestBody ApplyRequest req,
                                                       @AuthenticationPrincipal User user) {
         if (user == null) return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
-        if (!"student".equals(user.getRole())) {
-            return ResponseEntity.status(403).body(Map.of("message", "Only students can apply"));
+        if (!"job seeker".equals(user.getRole())) {
+            return ResponseEntity.status(403).body(Map.of("message", "Only job seekers can apply"));
         }
         if (applicationRepository.existsByUserIdAndInternshipId(user.getId(), req.getInternshipId())) {
             return ResponseEntity.badRequest().body(Map.of("message", "You have already applied for this internship"));

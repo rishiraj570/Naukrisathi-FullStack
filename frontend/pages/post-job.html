@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post a Job | NaukriSaathi</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0;}
+.container{max-width:1000px;margin:40px auto;background:#fff;padding:40px;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+h1{text-align:center;color:#0b1d3a;margin-bottom:30px;}
+.back-link{display:inline-block;margin-bottom:20px;color:#16a34a;text-decoration:none;font-weight:600;font-size:14px;}
+.back-link:hover{text-decoration:underline;}
+.section-title{color:#16a34a;font-size:22px;margin:25px 0 15px;font-weight:700;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.form-group{margin-bottom:15px;}
+label{display:block;margin-bottom:6px;font-weight:600;font-size:14px;}
+label span{color:#ef4444;}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:Arial,sans-serif;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
+input.error,textarea.error{border-color:#ef4444;}
+textarea{resize:none;}
+.error-text{font-size:12px;color:#ef4444;margin-top:4px;display:none;}
+.btn{width:100%;background:#16a34a;color:white;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn:hover{background:#15803d;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;background:#0b1d3a;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(80px);opacity:0;transition:all 0.35s;z-index:9999;display:flex;align-items:center;gap:10px;}
+@media(max-width:600px){.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="recruiter-dashboard.html" class="back-link">← Back to Dashboard</a>
+  <h1>Post a New Job</h1>
+
+  <div class="section-title">Job Information</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Job Title <span>*</span></label>
+      <input type="text" id="title" placeholder="e.g. Software Engineer">
+      <div class="error-text" id="title-error">Job title is required.</div>
+    </div>
+    <div class="form-group">
+      <label>Job Type <span>*</span></label>
+      <select id="jobType">
+        <option value="Full Time">Full Time</option>
+        <option value="Internship">Internship</option>
+        <option value="Part Time">Part Time</option>
+        <option value="Contract">Contract</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Location <span>*</span></label>
+      <input type="text" id="location" placeholder="e.g. Bangalore">
+      <div class="error-text" id="location-error">Location is required.</div>
+    </div>
+    <div class="form-group">
+      <label>Work Mode</label>
+      <select id="workMode">
+        <option value="On-site">On-site</option>
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Salary Package <span>*</span></label>
+      <input type="text" id="salary" placeholder="e.g. 8 LPA or ₹20,000/month">
+      <div class="error-text" id="salary-error">Salary is required.</div>
+    </div>
+    <div class="form-group">
+      <label>Experience Required</label>
+      <select id="experience">
+        <option value="Fresher">Fresher</option>
+        <option value="0-1 Year">0-1 Year</option>
+        <option value="1-3 Years">1-3 Years</option>
+        <option value="3+ Years">3+ Years</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section-title">Eligibility Criteria</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Minimum CGPA</label>
+      <input type="number" step="0.1" id="minCgpa" placeholder="e.g. 7.0" min="0" max="10">
+    </div>
+    <div class="form-group">
+      <label>Graduation Year</label>
+      <input type="text" id="graduationYear" placeholder="e.g. 2025, 2026">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Eligible Branches</label>
+    <input type="text" id="eligibleBranches" placeholder="CSE, IT, ECE (comma separated)">
+  </div>
+
+  <div class="section-title">Skills Required</div>
+
+  <div class="form-group">
+    <label>Required Skills <span>*</span></label>
+    <input type="text" id="skills" placeholder="Java, Python, React, AWS (comma separated)">
+    <div class="error-text" id="skills-error">Please enter at least one required skill.</div>
+  </div>
+
+  <div class="section-title">Company Information</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Company Name <span>*</span></label>
+      <input type="text" id="companyName" placeholder="Your company name">
+      <div class="error-text" id="company-error">Company name is required.</div>
+    </div>
+    <div class="form-group">
+      <label>Company Type</label>
+      <select id="companyType">
+        <option value="Product Based">Product Based</option>
+        <option value="Service Based">Service Based</option>
+        <option value="Startup">Startup</option>
+        <option value="MNC">MNC</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Job Description <span>*</span></label>
+    <textarea rows="8" id="description" placeholder="Describe the role, responsibilities, and what you are looking for..."></textarea>
+    <div class="error-text" id="desc-error">Job description is required (min 50 characters).</div>
+  </div>
+
+  <button class="btn" id="post-btn" onclick="postJob()">
+    <div class="spinner" id="spinner"></div>
+    <span id="btn-text">Post Job</span>
+  </button>
+</div>
+
+<div id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<script src="../api.js"></script>
+<script>
+  if (!isLoggedIn()) { window.location.href = '../signin.html'; }
+  const user = getUser();
+  if (!user || user.role !== 'hiringpartner') { window.location.href = '../index.html'; }
+
+  // Pre-fill company name from profile if available
+  (async () => {
+    try {
+      const p = await UserAPI.profile();
+      const profile = p.user || p.profile || p;
+      if (profile.companyName) {
+        document.getElementById('companyName').value = profile.companyName;
+      }
+    } catch (_) {}
+  })();
+
+  function validate() {
+    let valid = true;
+    const checks = [
+      { id: 'title',       errId: 'title-error',   check: v => v.trim().length > 0 },
+      { id: 'location',    errId: 'location-error', check: v => v.trim().length > 0 },
+      { id: 'salary',      errId: 'salary-error',   check: v => v.trim().length > 0 },
+      { id: 'skills',      errId: 'skills-error',   check: v => v.trim().length > 0 },
+      { id: 'companyName', errId: 'company-error',  check: v => v.trim().length > 0 },
+      { id: 'description', errId: 'desc-error',     check: v => v.trim().length >= 50 }
+    ];
+    checks.forEach(({ id, errId, check }) => {
+      const el  = document.getElementById(id);
+      const err = document.getElementById(errId);
+      el.classList.remove('error');
+      err.style.display = 'none';
+      if (!check(el.value)) {
+        el.classList.add('error');
+        err.style.display = 'block';
+        valid = false;
+      }
+    });
+    return valid;
+  }
+
+  async function postJob() {
+    if (!validate()) { showToast('Please fix the errors above.', '❌'); return; }
+
+    const btn     = document.getElementById('post-btn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+    btn.disabled          = true;
+    spinner.style.display = 'block';
+    btnText.textContent   = 'Posting...';
+
+    const rawSkills = document.getElementById('skills').value;
+    const skills    = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
+
+    const payload = {
+      title:            document.getElementById('title').value.trim(),
+      jobType:          document.getElementById('jobType').value,
+      location:         document.getElementById('location').value.trim(),
+      workMode:         document.getElementById('workMode').value,
+      salary:           document.getElementById('salary').value.trim(),
+      experience:       document.getElementById('experience').value,
+      minCgpa:          document.getElementById('minCgpa').value || null,
+      graduationYear:   document.getElementById('graduationYear').value.trim(),
+      eligibleBranches: document.getElementById('eligibleBranches').value.trim(),
+      skills:           skills,
+      companyName:      document.getElementById('companyName').value.trim(),
+      companyType:      document.getElementById('companyType').value,
+      description:      document.getElementById('description').value.trim()
+    };
+
+    try {
+      await JobAPI.create(payload);
+      showToast('Job posted successfully!', '🎉');
+      setTimeout(() => { window.location.href = 'recruiter-dashboard.html'; }, 1200);
+    } catch (err) {
+      showToast(err.message || 'Failed to post job. Please try again.', '❌');
+      btn.disabled          = false;
+      spinner.style.display = 'none';
+      btnText.textContent   = 'Post Job';
+    }
+  }
+</script>
+</body>
+</html>

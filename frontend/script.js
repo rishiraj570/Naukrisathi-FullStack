@@ -69,8 +69,8 @@ function applyNow(id, title) {
   }
   
   const user = getUser();
-  if (user && user.role !== 'student') {
-    showToast('Only students can apply for internships!', '');
+  if (user && user.role !== 'job seeker') {
+    showToast('Only job seeker can apply for internships!', '');
     return;
   }
 

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saved Jobs | NaukriSaathi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#f5f7fb;}
+.header{background:#0b1d3a;color:white;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-size:24px;}
+.header-right{display:flex;gap:12px;}
+.header-right a,.header-right button{color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:6px;border:none;cursor:pointer;background:transparent;}
+.header-right a:hover,.header-right button:hover{background:rgba(255,255,255,0.1);}
+.container{max-width:1100px;margin:40px auto;padding:0 20px;}
+.page-title{color:#0b1d3a;margin-bottom:24px;font-size:22px;}
+.jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.job-card{background:white;padding:22px;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.job-card h3{color:#0b1d3a;margin-bottom:10px;font-size:16px;}
+.job-card p{color:#666;margin-bottom:8px;font-size:14px;}
+.tag{display:inline-block;background:#f0fdf4;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:10px;}
+.card-actions{display:flex;gap:8px;margin-top:12px;}
+.view-btn{flex:1;display:inline-block;text-align:center;background:#16a34a;color:white;padding:10px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;}
+.view-btn:hover{background:#15803d;}
+.empty-state,.loading-state,.error-state{text-align:center;padding:60px;color:#666;}
+.empty-state h3{color:#0b1d3a;margin-bottom:10px;}
+.empty-state a{color:#16a34a;text-decoration:none;font-weight:600;}
+#toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;background:#0b1d3a;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(80px);opacity:0;transition:all 0.35s;z-index:9999;display:flex;align-items:center;gap:10px;}
+@media(max-width:900px){.jobs-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.jobs-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Saved Jobs</h1>
+  <div class="header-right">
+    <a href="jobseeker-dashboard.html">Dashboard</a>
+    <a href="applied-jobs.html">Applications</a>
+    <button onclick="handleLogout()">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+  <h2 class="page-title">Your Saved Jobs</h2>
+  <div id="jobs-container">
+    <div class="loading-state">Loading saved jobs...</div>
+  </div>
+</div>
+
+<div id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<script src="../api.js"></script>
+<script>
+  if (!isLoggedIn()) { window.location.href = '../signin.html'; }
+  const user = getUser();
+  if (!user || user.role !== 'jobseeker') { window.location.href = '../index.html'; }
+
+  async function handleLogout() {
+    try { await AuthAPI.logout(); } catch (_) {}
+    clearAuth();
+    window.location.href = '../signin.html';
+  }
+
+  async function loadSavedJobs() {
+    const container = document.getElementById('jobs-container');
+    try {
+      const data = await UserAPI.saved();
+      const jobs = Array.isArray(data) ? data : data.savedJobs || data.jobs || data.data || [];
+
+      if (!jobs.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No saved jobs yet</h3>
+            <p>Browse jobs and save the ones you like.</p>
+            <a href="jobseeker-dashboard.html">Browse Jobs →</a>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `<div class="jobs-grid">${jobs.map(job => {
+        const id = job.id || job._id || '';
+        return `
+          <div class="job-card">
+            <span class="tag">${escHtml(job.jobType || job.type || 'Full Time')}</span>
+            <h3>${escHtml(job.title || job.jobTitle || 'Untitled')}</h3>
+            <p>🏢 ${escHtml(job.companyName || job.company || '—')}</p>
+            <p>📍 ${escHtml(job.location || '—')}</p>
+            <p>💰 ${escHtml(job.salary || job.salaryPackage || '—')}</p>
+            <div class="card-actions">
+              <a href="job-details.html?id=${encodeURIComponent(id)}" class="view-btn">View & Apply</a>
+            </div>
+          </div>`;
+      }).join('')}</div>`;
+
+    } catch (err) {
+      container.innerHTML = `<div class="error-state">Failed to load saved jobs. Please refresh.</div>`;
+    }
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  loadSavedJobs();
+</script>
+</body>
+</html>

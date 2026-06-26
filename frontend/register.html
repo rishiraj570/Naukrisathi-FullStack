@@ -229,7 +229,7 @@
   <div class="nav-left">
     <img src="NaukriSaathi.jpeg" alt="SunSys Techsol" class="nav-sunsys" />
     <div class="nav-divider"></div>
-    <a href="index (2).html" class="nav-logo">
+    <a href="index.html" class="nav-logo">
       NaukriSaathi<span>.com</span>
     </a>
   </div>
@@ -306,20 +306,19 @@
      <span class="role-label">Choose your account type</span>
 
 <div class="role-grid" id="role-grid">
-
-  <div class="role-card selected"
-       data-role="jobseeker"
-       onclick="selectRole(this)">
+<div class="role-card selected"
+     data-role="jobseeker"
+     onclick="selectRole(this)">
     <div class="role-name">Job Seeker</div>
     <div class="role-desc">Find Jobs</div>
-  </div>
+</div>
 
-  <div class="role-card"
-       data-role="hiringpartner"
-       onclick="selectRole(this)">
+<div class="role-card"
+     data-role="hiringpartner"
+     onclick="selectRole(this)">
     <div class="role-name">Hiring Partner</div>
     <div class="role-desc">Post Jobs</div>
-  </div>
+</div>
 
 </div>
       <!-- Social Signup -->
@@ -441,35 +440,30 @@
 <script src="api.js"></script>
 <script>
   // Redirect if already logged in
-  if (isLoggedIn()) { window.location.href = 'dashboard.html'; }
+  if (isLoggedIn()) {
+    const u = getUser();
+    window.location.href = u && u.role === 'hiringpartner'
+      ? 'pages/recruiter-dashboard.html'
+      : 'pages/jobseeker-dashboard.html';
+  }
 
   // ---- ROLE SELECTION ----
-  let selectedRole = 'student';
+  let selectedRole = 'jobseeker';
   function selectRole(card) {
     document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     selectedRole = card.dataset.role;
-    // Show/hide college field
     const cf = document.getElementById('college-field');
-    cf.style.display = selectedRole === 'student' ? 'block' : 'none';
+    if (cf) cf.style.display = selectedRole === 'jobseeker' ? 'block' : 'none';
   }
 
-  // ---- TOAST ----
-  function showToast(msg, icon = '✅') {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    document.getElementById('toast-icon').textContent = icon;
-    t.style.transform = 'translateY(0)'; t.style.opacity = '1';
-    setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 3000);
-  }
-
-  // ---- SOCIAL SIGNUP ----
+  // ---- SOCIAL SIGNUP (placeholder) ----
   function socialSignup(provider) {
     showToast(`${provider} signup coming soon!`, '🔗');
   }
 
   // ---- PASSWORD TOGGLE ----
-  const pwInput = document.getElementById('password');
+  const pwInput  = document.getElementById('password');
   const toggleBtn = document.getElementById('toggle-pw');
   let shown = false;
   toggleBtn.addEventListener('click', () => {
@@ -483,11 +477,10 @@
     const fill = document.getElementById('strength-fill');
     const text = document.getElementById('strength-text');
     let score = 0;
-    if (val.length >= 8) score++;
-    if (/[A-Z]/.test(val)) score++;
-    if (/[0-9]/.test(val)) score++;
-    if (/[^A-Za-z0-9]/.test(val)) score++;
-
+    if (val.length >= 8)           score++;
+    if (/[A-Z]/.test(val))         score++;
+    if (/[0-9]/.test(val))         score++;
+    if (/[^A-Za-z0-9]/.test(val))  score++;
     const levels = [
       { w: '0%',   color: 'transparent', label: 'Enter a password' },
       { w: '25%',  color: '#EF4444',     label: '😟 Weak' },
@@ -496,10 +489,10 @@
       { w: '100%', color: '#22C55E',     label: '💪 Strong!' }
     ];
     const lv = val.length === 0 ? 0 : Math.max(1, score);
-    fill.style.width = levels[lv].w;
+    fill.style.width      = levels[lv].w;
     fill.style.background = levels[lv].color;
-    text.textContent = levels[lv].label;
-    text.style.color = levels[lv].color === 'transparent' ? 'var(--text-light)' : levels[lv].color;
+    text.textContent      = levels[lv].label;
+    text.style.color      = levels[lv].color === 'transparent' ? 'var(--text-light)' : levels[lv].color;
   }
 
   // ---- FORM VALIDATION & API SUBMIT ----
@@ -507,15 +500,14 @@
     e.preventDefault();
 
     const fields = {
-      fname: { el: document.getElementById('fname'), err: document.getElementById('fname-error'), check: v => v.trim().length > 0, msg: 'First name is required.' },
-      lname: { el: document.getElementById('lname'), err: document.getElementById('lname-error'), check: v => v.trim().length > 0, msg: 'Last name is required.' },
-      email: { el: document.getElementById('email'), err: document.getElementById('email-error'), check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()), msg: 'Please enter a valid email address.' },
-      phone: { el: document.getElementById('phone'), err: document.getElementById('phone-error'), check: v => v.trim().length >= 7, msg: 'Please enter a valid phone number.' },
-      password: { el: document.getElementById('password'), err: document.getElementById('pw-error'), check: v => v.length >= 8, msg: 'Password must be at least 8 characters.' }
+      fname:    { el: document.getElementById('fname'),    err: document.getElementById('fname-error'),  check: v => v.trim().length > 0,                                 msg: 'First name is required.' },
+      lname:    { el: document.getElementById('lname'),    err: document.getElementById('lname-error'),  check: v => v.trim().length > 0,                                 msg: 'Last name is required.' },
+      email:    { el: document.getElementById('email'),    err: document.getElementById('email-error'),  check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),        msg: 'Please enter a valid email address.' },
+      phone:    { el: document.getElementById('phone'),    err: document.getElementById('phone-error'),  check: v => /^[+\d\s\-]{7,15}$/.test(v.trim()),                 msg: 'Please enter a valid phone number.' },
+      password: { el: document.getElementById('password'), err: document.getElementById('pw-error'),     check: v => v.length >= 8,                                       msg: 'Password must be at least 8 characters.' }
     };
 
     let valid = true;
-
     Object.values(fields).forEach(f => {
       f.el.classList.remove('error');
       f.err.style.display = 'none';
@@ -526,68 +518,61 @@
       }
     });
 
-    const termsEl = document.getElementById('terms');
+    const termsEl  = document.getElementById('terms');
     const termsErr = document.getElementById('terms-error');
-    if (!termsEl.checked) {
-      termsErr.style.display = 'block';
-      valid = false;
-    } else {
-      termsErr.style.display = 'none';
-    }
+    if (!termsEl.checked) { termsErr.style.display = 'block'; valid = false; }
+    else                  { termsErr.style.display = 'none'; }
 
-    if (!valid) { showToast('Please fix the errors above!', ''); return; }
+    if (!valid) { showToast('Please fix the errors above.', '❌'); return; }
 
-    const btn = document.getElementById('submit-btn');
+    const btn     = document.getElementById('submit-btn');
     const spinner = document.getElementById('spinner');
     const btnText = document.getElementById('btn-text');
-    btn.disabled = true;
-    spinner.style.display = 'block';
-    btnText.textContent = 'Creating account...';
+    btn.disabled           = true;
+    spinner.style.display  = 'block';
+    btnText.textContent    = 'Creating account...';
 
     try {
-      // Build API payload
       const payload = {
-        firstName: document.getElementById('fname').value.trim(),
-        lastName: document.getElementById('lname').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        password: document.getElementById('password').value,
-        role: selectedRole
+        firstName: fields.fname.el.value.trim(),
+        lastName:  fields.lname.el.value.trim(),
+        email:     fields.email.el.value.trim(),
+        phone:     fields.phone.el.value.trim(),
+        password:  fields.password.el.value,
+        role:      selectedRole
       };
 
-      if (selectedRole === 'student') {
-        payload.college = document.getElementById('college').value.trim();
+      if (selectedRole === 'jobseeker') {
+        const collegeEl = document.getElementById('college');
+        if (collegeEl) payload.college = collegeEl.value.trim();
       }
 
-      // Call API
       const data = await AuthAPI.register(payload);
-      
-      // Store auth
       setAuth(data.token, data.user);
 
-      // Success UI
-      btn.disabled = false;
+      btn.disabled          = false;
       spinner.style.display = 'none';
-      btnText.textContent = 'Create Free Account →';
+      btnText.textContent   = 'Create Free Account →';
 
-      document.getElementById('success-msg').textContent = `Welcome, ${payload.firstName}! Your account has been created. Let's get started!`;
+      document.getElementById('success-msg').textContent =
+        `Welcome, ${payload.firstName}! Your account has been created. Let's get started!`;
       document.getElementById('success-overlay').style.display = 'flex';
-      
+
     } catch (err) {
-      btn.disabled = false;
+      btn.disabled          = false;
       spinner.style.display = 'none';
-      btnText.textContent = 'Create Free Account →';
-      showToast(err.message || 'Registration failed. Please try again.', '');
-      
-      // Handle express-validator errors array if present
-      if (err.errors && Array.isArray(err.errors)) {
-          err.errors.forEach(e => showToast(e.msg, ''));
-      }
+      btnText.textContent   = 'Create Free Account →';
+      showToast(err.message || 'Registration failed. Please try again.', '❌');
     }
   });
 
   function goHome() {
-    window.location.href = 'dashboard.html';
+    const user = getUser();
+    if (user && user.role === 'hiringpartner') {
+      window.location.href = 'pages/recruiter-dashboard.html';
+    } else {
+      window.location.href = 'pages/jobseeker-dashboard.html';
+    }
   }
 </script>
 </body>

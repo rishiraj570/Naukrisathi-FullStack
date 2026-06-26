@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Seeker Profile | NaukriSaathi</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0;}
+.container{max-width:900px;margin:40px auto;background:#fff;padding:40px;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,.1);}
+h1{text-align:center;color:#0b1d3a;margin-bottom:30px;}
+.back-link{display:inline-block;margin-bottom:20px;color:#16a34a;text-decoration:none;font-weight:600;font-size:14px;}
+.back-link:hover{text-decoration:underline;}
+.section-title{color:#16a34a;margin:25px 0 15px;font-size:20px;font-weight:700;}
+.form-group{margin-bottom:15px;}
+label{display:block;margin-bottom:6px;font-weight:600;}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:Arial,sans-serif;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
+input[readonly]{background:#f9fafb;color:#666;}
+textarea{resize:none;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.btn{width:100%;background:#16a34a;color:white;border:none;padding:14px;font-size:16px;font-weight:700;border-radius:8px;cursor:pointer;margin-top:20px;}
+.btn:hover{background:#15803d;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.success-msg{display:none;background:#f0fdf4;border:1px solid #86efac;color:#15803d;padding:12px 16px;border-radius:8px;margin-top:16px;font-weight:600;text-align:center;}
+.error-banner{display:none;background:#fef2f2;border:1px solid #fca5a5;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px;}
+#toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;background:#0b1d3a;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(80px);opacity:0;transition:all 0.35s;z-index:9999;display:flex;align-items:center;gap:10px;}
+@media(max-width:600px){.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="jobseeker-dashboard.html" class="back-link">← Back to Dashboard</a>
+  <h1>Job Seeker Profile</h1>
+
+  <div class="error-banner" id="error-banner"></div>
+
+  <div class="section-title">Personal Details</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>First Name</label>
+      <input type="text" id="firstName" placeholder="First name">
+    </div>
+    <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" id="lastName" placeholder="Last name">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" readonly>
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" id="phone" placeholder="Enter phone number">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Date of Birth</label>
+      <input type="date" id="dob">
+    </div>
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" id="location" placeholder="City, State">
+    </div>
+  </div>
+
+  <div class="section-title">Education Details</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>College Name</label>
+      <input type="text" id="college" placeholder="Enter college name">
+    </div>
+    <div class="form-group">
+      <label>Degree</label>
+      <input type="text" id="degree" placeholder="B.Tech, BCA...">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Branch</label>
+      <input type="text" id="branch" placeholder="CSE, IT, ECE...">
+    </div>
+    <div class="form-group">
+      <label>Current Semester</label>
+      <input type="number" id="semester" placeholder="Semester" min="1" max="12">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>CGPA</label>
+      <input type="number" step="0.01" id="cgpa" placeholder="e.g. 8.5" min="0" max="10">
+    </div>
+    <div class="form-group">
+      <label>Graduation Year</label>
+      <input type="number" id="graduationYear" placeholder="2027">
+    </div>
+  </div>
+
+  <div class="section-title">Skills & Experience</div>
+
+  <div class="form-group">
+    <label>Programming Languages</label>
+    <input type="text" id="programmingLanguages" placeholder="Java, Python, C++, JavaScript">
+  </div>
+
+  <div class="form-group">
+    <label>Technologies / Tools</label>
+    <input type="text" id="technologies" placeholder="AWS, Docker, Git, React">
+  </div>
+
+  <div class="form-group">
+    <label>Experience</label>
+    <select id="experience">
+      <option value="Fresher">Fresher</option>
+      <option value="Internship Experience">Internship Experience</option>
+      <option value="0-1 Year">0-1 Year</option>
+      <option value="1-3 Years">1-3 Years</option>
+      <option value="3+ Years">3+ Years</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Projects</label>
+    <textarea rows="4" id="projects" placeholder="Describe your projects..."></textarea>
+  </div>
+
+  <div class="section-title">Job Preferences</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Preferred Location</label>
+      <input type="text" id="preferredLocation" placeholder="Bangalore, Remote...">
+    </div>
+    <div class="form-group">
+      <label>Expected Salary (LPA)</label>
+      <input type="text" id="expectedSalary" placeholder="e.g. 8 LPA">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Work Mode</label>
+    <select id="workMode">
+      <option value="Remote">Remote</option>
+      <option value="Hybrid">Hybrid</option>
+      <option value="On-site">On-site</option>
+    </select>
+  </div>
+
+  <button class="btn" id="save-btn" onclick="saveProfile()">Save Profile</button>
+  <div class="success-msg" id="success-msg">✅ Profile saved successfully!</div>
+</div>
+
+<div id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<script src="../api.js"></script>
+<script>
+  if (!isLoggedIn()) { window.location.href = '../signin.html'; }
+  const user = getUser();
+  if (!user || user.role !== 'jobseeker') { window.location.href = '../index.html'; }
+
+  // ── Populate from stored user first, then fetch full profile ──
+  document.getElementById('firstName').value = user.firstName || '';
+  document.getElementById('lastName').value  = user.lastName  || '';
+  document.getElementById('email').value     = user.email     || '';
+  document.getElementById('phone').value     = user.phone     || '';
+
+  async function loadProfile() {
+    try {
+      const profile = await UserAPI.profile();
+      const p = profile.user || profile.profile || profile;
+      setField('firstName',          p.firstName);
+      setField('lastName',           p.lastName);
+      setField('email',              p.email);
+      setField('phone',              p.phone);
+      setField('dob',                p.dob);
+      setField('location',           p.location);
+      setField('college',            p.college);
+      setField('degree',             p.degree);
+      setField('branch',             p.branch);
+      setField('semester',           p.semester);
+      setField('cgpa',               p.cgpa);
+      setField('graduationYear',     p.graduationYear);
+      setField('programmingLanguages', p.programmingLanguages);
+      setField('technologies',       p.technologies);
+      setSelectField('experience',   p.experience);
+      setField('projects',           p.projects);
+      setField('preferredLocation',  p.preferredLocation);
+      setField('expectedSalary',     p.expectedSalary);
+      setSelectField('workMode',     p.workMode);
+    } catch (err) {
+      // Non-fatal: profile may not exist yet
+    }
+  }
+
+  function setField(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) el.value = val;
+  }
+
+  function setSelectField(id, val) {
+    const el = document.getElementById(id);
+    if (!el || !val) return;
+    for (let i = 0; i < el.options.length; i++) {
+      if (el.options[i].value === val) { el.selectedIndex = i; break; }
+    }
+  }
+
+  async function saveProfile() {
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const payload = {
+      firstName:            document.getElementById('firstName').value.trim(),
+      lastName:             document.getElementById('lastName').value.trim(),
+      phone:                document.getElementById('phone').value.trim(),
+      dob:                  document.getElementById('dob').value,
+      location:             document.getElementById('location').value.trim(),
+      college:              document.getElementById('college').value.trim(),
+      degree:               document.getElementById('degree').value.trim(),
+      branch:               document.getElementById('branch').value.trim(),
+      semester:             document.getElementById('semester').value,
+      cgpa:                 document.getElementById('cgpa').value,
+      graduationYear:       document.getElementById('graduationYear').value,
+      programmingLanguages: document.getElementById('programmingLanguages').value.trim(),
+      technologies:         document.getElementById('technologies').value.trim(),
+      experience:           document.getElementById('experience').value,
+      projects:             document.getElementById('projects').value.trim(),
+      preferredLocation:    document.getElementById('preferredLocation').value.trim(),
+      expectedSalary:       document.getElementById('expectedSalary').value.trim(),
+      workMode:             document.getElementById('workMode').value
+    };
+
+    // Basic validation
+    if (!payload.firstName) { showToast('First name is required.', '❌'); btn.disabled=false; btn.textContent='Save Profile'; return; }
+    if (!payload.phone)     { showToast('Phone number is required.', '❌'); btn.disabled=false; btn.textContent='Save Profile'; return; }
+
+    try {
+      await UserAPI.update(payload);
+      document.getElementById('success-msg').style.display = 'block';
+      showToast('Profile saved!', '✅');
+    } catch (err) {
+      showToast(err.message || 'Failed to save profile.', '❌');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Profile';
+    }
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>

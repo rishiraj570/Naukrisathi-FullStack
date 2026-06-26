@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply for Job | NaukriSaathi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#f5f7fb;}
+.back-bar{padding:16px 5%;background:#fff;border-bottom:1px solid #e5e7eb;}
+.back-link{color:#16a34a;text-decoration:none;font-weight:600;font-size:14px;}
+.back-link:hover{text-decoration:underline;}
+.container{max-width:800px;margin:40px auto;background:white;padding:40px;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+h1{text-align:center;color:#0b1d3a;margin-bottom:8px;}
+.job-info-bar{text-align:center;color:#555;font-size:14px;margin-bottom:30px;}
+.form-group{margin-bottom:20px;}
+label{display:block;margin-bottom:8px;font-weight:600;font-size:14px;}
+label span{color:#ef4444;}
+input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:Arial,sans-serif;}
+input:focus,textarea:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
+input.error,textarea.error{border-color:#ef4444;}
+input[readonly]{background:#f9fafb;color:#555;}
+textarea{resize:none;}
+.error-text{font-size:12px;color:#ef4444;margin-top:4px;display:none;}
+.btn{width:100%;background:#16a34a;color:white;border:none;padding:14px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn:hover{background:#15803d;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.success-box{display:none;background:#f0fdf4;border:1px solid #86efac;padding:24px;border-radius:12px;text-align:center;margin-top:20px;}
+.success-box h3{color:#15803d;margin-bottom:8px;}
+.success-box p{color:#555;font-size:14px;}
+.success-box a{display:inline-block;margin-top:16px;background:#16a34a;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;}
+#toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;background:#0b1d3a;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(80px);opacity:0;transition:all 0.35s;z-index:9999;display:flex;align-items:center;gap:10px;}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a id="back-link" href="jobseeker-dashboard.html" class="back-link">← Back</a>
+</div>
+
+<div class="container">
+  <h1>Apply for Job</h1>
+  <p class="job-info-bar" id="job-info-bar">Loading job information...</p>
+
+  <div class="form-group">
+    <label>Full Name <span>*</span></label>
+    <input type="text" id="fullName" placeholder="Your full name">
+    <div class="error-text" id="name-error">Full name is required.</div>
+  </div>
+
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" id="email" readonly>
+  </div>
+
+  <div class="form-group">
+    <label>Phone Number <span>*</span></label>
+    <input type="text" id="phone" placeholder="+91 98765 43210">
+    <div class="error-text" id="phone-error">Please enter a valid phone number.</div>
+  </div>
+
+  <div class="form-group">
+    <label>LinkedIn Profile</label>
+    <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+  </div>
+
+  <div class="form-group">
+    <label>Portfolio / GitHub</label>
+    <input type="url" id="github" placeholder="https://github.com/username">
+  </div>
+
+  <div class="form-group">
+    <label>Upload Resume <span>*</span></label>
+    <input type="file" id="resume" accept=".pdf,.doc,.docx">
+    <div class="error-text" id="resume-error">Please upload your resume.</div>
+  </div>
+
+  <div class="form-group">
+    <label>Cover Letter <span>*</span></label>
+    <textarea rows="6" id="coverLetter" placeholder="Tell the employer why you're a great fit for this role..."></textarea>
+    <div class="error-text" id="cover-error">Please write a cover letter.</div>
+  </div>
+
+  <button class="btn" id="submit-btn" onclick="applyJob()">
+    <div class="spinner" id="spinner"></div>
+    <span id="btn-text">Submit Application</span>
+  </button>
+
+  <div class="success-box" id="success-box">
+    <h3>🎉 Application Submitted!</h3>
+    <p>Your application has been submitted successfully. Good luck!</p>
+    <a href="applied-jobs.html">View My Applications</a>
+  </div>
+</div>
+
+<div id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<script src="../api.js"></script>
+<script>
+  // ── Route protection ──
+  if (!isLoggedIn()) { window.location.href = '../signin.html'; }
+  const user = getUser();
+  if (!user || user.role !== 'jobseeker') { window.location.href = '../index.html'; }
+
+  // ── Read job ID from URL ──
+  const urlParams = new URLSearchParams(window.location.search);
+  const jobId     = urlParams.get('id');
+
+  // Update back link
+  if (jobId) {
+    document.getElementById('back-link').href = `job-details.html?id=${encodeURIComponent(jobId)}`;
+  }
+
+  // ── Auto-fill user details ──
+  document.getElementById('fullName').value = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  document.getElementById('email').value    = user.email || '';
+  document.getElementById('phone').value    = user.phone || '';
+
+  // ── Load job title for info bar ──
+  async function loadJobInfo() {
+    if (!jobId) {
+      document.getElementById('job-info-bar').textContent = 'No job selected.';
+      return;
+    }
+    try {
+      const data = await JobAPI.getById(jobId);
+      const job  = data.job || data;
+      document.getElementById('job-info-bar').textContent =
+        `Applying for: ${job.title || job.jobTitle || 'Job'} at ${job.companyName || job.company || '—'}`;
+    } catch (_) {
+      document.getElementById('job-info-bar').textContent = '';
+    }
+  }
+
+  // ── Validation ──
+  function validate() {
+    let valid = true;
+    const checks = [
+      { id: 'fullName',    errId: 'name-error',   check: v => v.trim().length > 0 },
+      { id: 'phone',       errId: 'phone-error',   check: v => /^[+\d\s\-]{7,15}$/.test(v.trim()) },
+      { id: 'coverLetter', errId: 'cover-error',   check: v => v.trim().length >= 30 }
+    ];
+    checks.forEach(({ id, errId, check }) => {
+      const el  = document.getElementById(id);
+      const err = document.getElementById(errId);
+      el.classList.remove('error');
+      err.style.display = 'none';
+      if (!check(el.value)) {
+        el.classList.add('error');
+        err.style.display = 'block';
+        valid = false;
+      }
+    });
+
+    const resumeEl  = document.getElementById('resume');
+    const resumeErr = document.getElementById('resume-error');
+    resumeErr.style.display = 'none';
+    if (!resumeEl.files || !resumeEl.files.length) {
+      resumeErr.style.display = 'block';
+      valid = false;
+    }
+    return valid;
+  }
+
+  // ── Submit ──
+  async function applyJob() {
+    if (!jobId) { showToast('No job ID found. Please go back and try again.', '❌'); return; }
+    if (!validate()) { showToast('Please fix the errors above.', '❌'); return; }
+
+    const btn     = document.getElementById('submit-btn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+    btn.disabled          = true;
+    spinner.style.display = 'block';
+    btnText.textContent   = 'Submitting...';
+
+    try {
+      const payload = {
+        jobId:       jobId,
+        phone:       document.getElementById('phone').value.trim(),
+        linkedin:    document.getElementById('linkedin').value.trim(),
+        github:      document.getElementById('github').value.trim(),
+        coverLetter: document.getElementById('coverLetter').value.trim()
+      };
+
+      await ApplicationAPI.apply(payload);
+
+      btn.style.display = 'none';
+      document.getElementById('success-box').style.display = 'block';
+      showToast('Application submitted!', '🎉');
+
+    } catch (err) {
+      showToast(err.message || 'Failed to submit application. Please try again.', '❌');
+      btn.disabled          = false;
+      spinner.style.display = 'none';
+      btnText.textContent   = 'Submit Application';
+    }
+  }
+
+  loadJobInfo();
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Profile | NaukriSaathi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#f5f7fb;}
+.container{max-width:900px;margin:40px auto;background:white;padding:40px;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+h1{text-align:center;color:#0b1d3a;margin-bottom:30px;}
+.back-link{display:inline-block;margin-bottom:20px;color:#16a34a;text-decoration:none;font-weight:600;font-size:14px;}
+.back-link:hover{text-decoration:underline;}
+.section-title{color:#16a34a;font-size:22px;margin:25px 0 15px;font-weight:700;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.form-group{margin-bottom:15px;}
+label{display:block;margin-bottom:6px;font-weight:600;font-size:14px;}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:Arial,sans-serif;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,0.12);}
+input[readonly]{background:#f9fafb;color:#666;}
+textarea{resize:none;}
+.btn{width:100%;background:#16a34a;color:white;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;}
+.btn:hover{background:#15803d;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.success-msg{display:none;background:#f0fdf4;border:1px solid #86efac;color:#15803d;padding:12px 16px;border-radius:8px;margin-top:16px;font-weight:600;text-align:center;}
+#toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;background:#0b1d3a;box-shadow:0 8px 24px rgba(0,0,0,0.2);transform:translateY(80px);opacity:0;transition:all 0.35s;z-index:9999;display:flex;align-items:center;gap:10px;}
+@media(max-width:600px){.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="recruiter-dashboard.html" class="back-link">← Back to Dashboard</a>
+  <h1>Company Profile</h1>
+
+  <div class="section-title">Company Details</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Company Name</label>
+      <input type="text" id="companyName" placeholder="e.g. Acme Corp">
+    </div>
+    <div class="form-group">
+      <label>Company Website</label>
+      <input type="url" id="companyWebsite" placeholder="https://example.com">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Industry</label>
+      <input type="text" id="industry" placeholder="IT, Finance, Healthcare...">
+    </div>
+    <div class="form-group">
+      <label>Company Size</label>
+      <select id="companySize">
+        <option value="1-10">1-10 Employees</option>
+        <option value="11-50">11-50 Employees</option>
+        <option value="51-200">51-200 Employees</option>
+        <option value="201-1000">201-1000 Employees</option>
+        <option value="1000+">1000+ Employees</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Company Type</label>
+    <select id="companyType">
+      <option value="Product Based">Product Based</option>
+      <option value="Service Based">Service Based</option>
+      <option value="Startup">Startup</option>
+      <option value="MNC">MNC</option>
+      <option value="Government">Government</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Company Description</label>
+    <textarea rows="5" id="companyDescription" placeholder="Brief description of your company..."></textarea>
+  </div>
+
+  <div class="section-title">Recruiter Details</div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Recruiter Name</label>
+      <input type="text" id="recruiterName" placeholder="HR / Hiring Manager name">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" readonly>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" id="phone" placeholder="Contact number">
+    </div>
+    <div class="form-group">
+      <label>Designation</label>
+      <input type="text" id="designation" placeholder="HR Manager, CTO...">
+    </div>
+  </div>
+
+  <button class="btn" id="save-btn" onclick="saveProfile()">Save Company Profile</button>
+  <div class="success-msg" id="success-msg">✅ Company profile saved successfully!</div>
+</div>
+
+<div id="toast"><span id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+<script src="../api.js"></script>
+<script>
+  if (!isLoggedIn()) { window.location.href = '../signin.html'; }
+  const user = getUser();
+  if (!user || user.role !== 'hiringpartner') { window.location.href = '../index.html'; }
+
+  // Pre-fill from stored user
+  document.getElementById('email').value        = user.email     || '';
+  document.getElementById('recruiterName').value = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  document.getElementById('phone').value        = user.phone     || '';
+
+  async function loadProfile() {
+    try {
+      const data = await UserAPI.profile();
+      const p    = data.user || data.profile || data;
+      setField('companyName',        p.companyName);
+      setField('companyWebsite',     p.companyWebsite);
+      setField('industry',           p.industry);
+      setSelectField('companySize',  p.companySize);
+      setSelectField('companyType',  p.companyType);
+      setField('companyDescription', p.companyDescription);
+      setField('recruiterName',      p.recruiterName || `${p.firstName || ''} ${p.lastName || ''}`.trim());
+      setField('email',              p.email);
+      setField('phone',              p.phone);
+      setField('designation',        p.designation);
+    } catch (_) {}
+  }
+
+  function setField(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null && val !== '') el.value = val;
+  }
+
+  function setSelectField(id, val) {
+    const el = document.getElementById(id);
+    if (!el || !val) return;
+    for (let i = 0; i < el.options.length; i++) {
+      if (el.options[i].value === val) { el.selectedIndex = i; break; }
+    }
+  }
+
+  async function saveProfile() {
+    const btn = document.getElementById('save-btn');
+    btn.disabled     = true;
+    btn.textContent  = 'Saving...';
+
+    const payload = {
+      companyName:        document.getElementById('companyName').value.trim(),
+      companyWebsite:     document.getElementById('companyWebsite').value.trim(),
+      industry:           document.getElementById('industry').value.trim(),
+      companySize:        document.getElementById('companySize').value,
+      companyType:        document.getElementById('companyType').value,
+      companyDescription: document.getElementById('companyDescription').value.trim(),
+      recruiterName:      document.getElementById('recruiterName').value.trim(),
+      phone:              document.getElementById('phone').value.trim(),
+      designation:        document.getElementById('designation').value.trim()
+    };
+
+    if (!payload.companyName) {
+      showToast('Company name is required.', '❌');
+      btn.disabled    = false;
+      btn.textContent = 'Save Company Profile';
+      return;
+    }
+
+    try {
+      await UserAPI.update(payload);
+      document.getElementById('success-msg').style.display = 'block';
+      showToast('Profile saved!', '✅');
+    } catch (err) {
+      showToast(err.message || 'Failed to save profile.', '❌');
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Save Company Profile';
+    }
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>

@@ -1,18 +1,23 @@
 package com.naukrisaathi.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.naukrisaathi.dto.LoginRequest;
 import com.naukrisaathi.dto.RegisterRequest;
 import com.naukrisaathi.model.User;
 import com.naukrisaathi.repository.UserRepository;
 import com.naukrisaathi.security.JwtUtil;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,7 +45,7 @@ public class AuthController {
         user.setEmail(req.getEmail().toLowerCase().trim());
         user.setPhone(req.getPhone());
         user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
-        user.setRole(req.getRole() != null ? req.getRole() : "student");
+        user.setRole(req.getRole() != null ? req.getRole() : "jobseeker");
         user.setCollege(req.getCollege());
 
         User saved = userRepository.save(user);
